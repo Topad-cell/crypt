@@ -74,3 +74,11 @@ def compute_macd(df, fast=12, slow=26, signal=9):
     signal_line = macd.ewm(span=signal, adjust=False).mean()
     hist = macd - signal_line
     return macd, signal_line, hist
+
+# --- Bollinger Bands ---
+def compute_bollinger_bands(df, n=20, k=2):
+    ma = df['close'].rolling(n).mean()
+    std = df['close'].rolling(n).std()
+    upper = ma + k * std
+    lower = ma - k * std
+    return upper, ma, lower

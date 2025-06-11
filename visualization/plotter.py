@@ -28,6 +28,19 @@ def plot_patterns(df, candle_patterns, chart_patterns):
     ), row=1, col=1)
 
     # --- EMA/SMA/ATR линии ---
+    if 'bb_upper' in df and 'bb_lower' in df and 'bb_ma' in df:
+        fig.add_trace(go.Scatter(
+            x = df['datetime'], y = df['bb_upper'],
+            mode = 'lines', name = 'Bollinger Upper', line = dict(width=1, color='gray', dash='dot')
+        ), row = 1, col = 1)
+        fig.add_trace(go.Scatter(
+            x = df['datetime'], y = df['bb_lower'],
+            mode = 'lines', name = 'Bollinger Lower', line = dict(width=1, color='gray', dash='dot')
+        ), row = 1, col = 1)
+        fig.add_trace(go.Scatter(
+            x = df['datetime'], y = df['bb_ma'],
+            mode = 'lines', name = 'Bollinger MA', line = dict(width=1, color='gray', dash='dash')
+        ), row = 1, col = 1)
     if 'atr_14' in df:
         fig.add_trace(go.Scatter(
             x = df['datetime'], y = df['atr_14'],
