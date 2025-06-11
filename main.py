@@ -1,13 +1,17 @@
 import pandas as pd
 from patterns import candlestick, chart
 from visualization.plotter import plot_patterns
-from analysis import indicators  # ← твой новый модуль!
+from analysis import indicators
+from analysis.indicators import compute_atr
 
 # 1. Загрузка данных
 df = pd.read_csv('data/df_high.csv', parse_dates=['datetime'])
 
 # 2. Добавляем индикаторы (EMA20, EMA50, SMA, RSI, средний объём и др.)
 df = indicators.add_basic_indicators(df, ema_periods=[20, 50], sma_periods=[20, 50], rsi_period=14)
+
+# === ATR 14 ===
+df['atr_14'] = compute_atr(df)
 
 # 3. Поиск паттернов
 candle_patterns = candlestick.find_all_patterns(df)

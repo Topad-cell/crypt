@@ -27,7 +27,12 @@ def plot_patterns(df, candle_patterns, chart_patterns):
         name='Candles'
     ), row=1, col=1)
 
-    # --- EMA/SMA линии ---
+    # --- EMA/SMA/ATR линии ---
+    if 'atr_14' in df:
+        fig.add_trace(go.Scatter(
+            x = df['datetime'], y = df['atr_14'],
+            mode = 'lines', name = 'ATR 14', line = dict(width=1, color='magenta', dash='dash')
+        ), row = 1, col = 1)
     if 'ema_20' in df:
         fig.add_trace(go.Scatter(
             x=df['datetime'], y=df['ema_20'],

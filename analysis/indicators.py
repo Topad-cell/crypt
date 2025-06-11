@@ -55,3 +55,13 @@ def is_below_ema(row, price_col='close', ema_col='ema_20'):
     True, если цена ниже EMA
     """
     return row[price_col] < row[ema_col]
+
+# --- ATR (Average True Range) ---
+def compute_atr(df, period=14):
+    high_low = df['high'] - df['low']
+    high_close = (df['high'] - df['close'].shift()).abs()
+    low_close = (df['low'] - df['close'].shift()).abs()
+    ranges = pd.concat([high_low, high_close, low_close], axis=1)
+    true_range = ranges.max(axis=1)
+    atr = true_range.rolling(window=period).mean()
+    return atr
