@@ -4,16 +4,17 @@ from plotly.subplots import make_subplots
 def plot_patterns(df, candle_patterns, chart_patterns):
     # --- Создаём subplot: Price+Patterns, Volume, RSI
     fig = make_subplots(
-        rows=3, cols=1,
+        rows=4, cols=1,
         shared_xaxes=True,
         vertical_spacing=0.04,
-        row_heights=[0.65, 0.18, 0.17],
+        row_heights=[0.65, 0.18, 0.18, 0.17],
         specs=[
             [{"type": "xy"}],  # 1-й ряд — цена+паттерны
+            [{"type": "bar"}],  # 1-й ряд — цена+паттерны
             [{"type": "bar"}],  # 2-й ряд — только объём
             [{"type": "xy"}],  # 3-й ряд — RSI
         ],
-        subplot_titles=("Price & Patterns", "Volume", "RSI")
+        subplot_titles=("Price & Patterns", "DateTime", "Volume", "RSI")
     )
 
     # --- 1. Основной свечной график ---
@@ -104,30 +105,30 @@ def plot_patterns(df, candle_patterns, chart_patterns):
         x=df['datetime'], y=df['volume'],
         name='Volume',
         marker_color='white', opacity=0.5
-    ), row=2, col=1)
+    ), row=3, col=1)
     if 'volume_ma_20' in df:
         fig.add_trace(go.Scatter(
             x=df['datetime'], y=df['volume_ma_20'],
             mode='lines', name='Volume MA20', line=dict(width=1, color='magenta')
-        ), row=2, col=1)
+        ), row=3, col=1)
 
     # --- 5. RSI ---
     if 'rsi' in df:
         fig.add_trace(go.Scatter(
             x=df['datetime'], y=df['rsi'],
             mode='lines', name='RSI', line=dict(width=1.2, color='dodgerblue')
-        ), row=3, col=1)
+        ), row=4, col=1)
         # Линии 70/30
-        fig.add_hline(y=70, line_dash='dot', line_color='red', row=3, col=1)
-        fig.add_hline(y=30, line_dash='dot', line_color='green', row=3, col=1)
+        fig.add_hline(y=70, line_dash='dot', line_color='red', row=4, col=1)
+        fig.add_hline(y=30, line_dash='dot', line_color='green', row=4, col=1)
 
     # --- Оформление ---
     fig.update_layout(
         title='Crypto Chart with Patterns & Indicators',
-        xaxis3=dict(title='Datetime'),
         yaxis1=dict(title='Price'),
-        yaxis2=dict(title='Volume'),
-        yaxis3=dict(title='RSI'),
+        yaxis2=dict(title='Datetime'),
+        yaxis3=dict(title='Volume'),
+        yaxis4=dict(title='RSI'),
         height=1000,
         template='plotly_dark',
         legend=dict(orientation="h", yanchor="bottom", y=1.01, xanchor="right", x=1)
