@@ -65,3 +65,12 @@ def compute_atr(df, period=14):
     true_range = ranges.max(axis=1)
     atr = true_range.rolling(window=period).mean()
     return atr
+
+# --- MACD (Moving Average Convergence Divergence) ---
+def compute_macd(df, fast=12, slow=26, signal=9):
+    exp1 = df['close'].ewm(span=fast, adjust=False).mean()
+    exp2 = df['close'].ewm(span=slow, adjust=False).mean()
+    macd = exp1 - exp2
+    signal_line = macd.ewm(span=signal, adjust=False).mean()
+    hist = macd - signal_line
+    return macd, signal_line, hist

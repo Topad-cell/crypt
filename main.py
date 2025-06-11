@@ -2,7 +2,7 @@ import pandas as pd
 from patterns import candlestick, chart
 from visualization.plotter import plot_patterns
 from analysis import indicators
-from analysis.indicators import compute_atr
+from analysis.indicators import compute_atr, compute_macd
 
 # 1. Загрузка данных
 df = pd.read_csv('data/df_high.csv', parse_dates=['datetime'])
@@ -12,6 +12,9 @@ df = indicators.add_basic_indicators(df, ema_periods=[20, 50], sma_periods=[20, 
 
 # === ATR 14 ===
 df['atr_14'] = compute_atr(df)
+
+# === MACD ===
+df['macd'], df['macd_signal'], df['macd_hist'] = compute_macd(df)
 
 # 3. Поиск паттернов
 candle_patterns = candlestick.find_all_patterns(df)

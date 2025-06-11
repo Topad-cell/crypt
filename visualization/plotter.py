@@ -31,8 +31,21 @@ def plot_patterns(df, candle_patterns, chart_patterns):
     if 'atr_14' in df:
         fig.add_trace(go.Scatter(
             x = df['datetime'], y = df['atr_14'],
-            mode = 'lines', name = 'ATR 14', line = dict(width=1, color='magenta', dash='dash')
-        ), row = 1, col = 1, secondary_y=True)
+            mode = 'lines', name = 'ATR 14', line = dict(width=1, color='green', dash='dash')
+        ), row = 3, col = 1)
+    if 'macd' in df and 'macd_signal' in df and 'macd_hist' in df:
+        fig.add_trace(go.Scatter(
+            x = df['datetime'], y = df['macd'],
+            mode = 'lines', name = 'MACD', line = dict(width=1.2, color='cyan')
+        ), row = 3, col = 1)
+        fig.add_trace(go.Scatter(
+            x = df['datetime'], y = df['macd_signal'],
+            mode = 'lines', name = 'MACD Signal', line = dict(width=1, color='orange', dash='dash')
+        ), row = 3, col = 1)
+        fig.add_trace(go.Bar(
+            x = df['datetime'], y = df['macd_hist'],
+            name = 'MACD Hist', marker_color = 'magenta', opacity = 0.4
+        ), row = 3, col = 1)
     if 'ema_20' in df:
         fig.add_trace(go.Scatter(
             x=df['datetime'], y=df['ema_20'],
