@@ -83,7 +83,32 @@ def plot_patterns(df, candle_patterns, chart_patterns):
 
     # --- 2. Свечные паттерны ---
     pattern_colors = {'bullish': 'limegreen', 'bearish': 'orangered', 'neutral': 'dodgerblue'}
-
+    # Добавим стрелки "вверх" для бычьих, "вниз" для медвежьих паттернов
+    for p in candle_patterns:
+        idx = p['index'] if isinstance(p['index'], int) else df.index.get_loc(p['index'])
+        x = df['datetime'].iloc[idx]
+    
+        if p['direction'] == 'bullish':
+            y = df['low'].iloc[idx] * 0.98
+            marker_symbol = 'arrow-bar-up'
+            marker_color = 'lime'
+        elif p['direction'] == 'bearish':
+            y = df['high'].iloc[idx] * 1.02
+            marker_symbol = 'arrow-bar-down'
+            marker_color = 'red'
+        else:
+            y = (df['low'].iloc[idx] + df['high'].iloc[idx]) / 2
+            marker_symbol = 'circle'
+            marker_color = 'dodgerblue'
+    # Добавляем стрелку
+        fig.add_trace(go.Scatter(
+            x = [x], y = [y],
+            mode = 'markers',
+            marker = dict(symbol=marker_symbol, size=22, color=marker_color, line=dict(width=1, color='black')),
+            name = f"{p['type']} signal",
+            showlegend = False,
+            hovertext = f"{p['type']} ({p['direction']})"
+        ), row = 1, col = 1)
     pattern_types_in_legend = set()
     for p in candle_patterns:
         idx = p['index'] if isinstance(p['index'], int) else df.index.get_loc(p['index'])
@@ -139,6 +164,36 @@ def plot_patterns(df, candle_patterns, chart_patterns):
             showlegend=show_legend,
             hovertext=f"{name} ({direction})"
         ), row=1, col=1)
+
+    # --- Стрелки для фигурных паттернов (только для подтверждённых) ---
+
+    for p in chart_patterns:
+        name = p['type']
+        direction = p.get('direction', 'neutral')
+        color = pattern_colors.get(direction, 'dodgerblue')
+        indices = p['indices']
+        # По умолчанию ставим стрелку в крайней точке фигуры (например, последняя свеча)
+        idx = indices[-1]
+        x = df['datetime'].iloc[idx]
+        # Для “bullish” — стрелка вверх чуть ниже low, для “bearish” — вниз чуть выше high
+
+        if direction == 'bullish':
+            y = df['low'].iloc[idx] * 0.985
+            marker_symbol = 'arrow-bar-up'
+        elif direction == 'bearish':
+            y = df['high'].iloc[idx] * 1.015
+            marker_symbol = 'arrow-bar-down'
+        else:
+            y = (df['low'].iloc[idx] + df['high'].iloc[idx]) / 2
+            marker_symbol = 'circle'
+        fig.add_trace(go.Scatter(
+            x = [x], y = [y],
+            mode = 'markers',
+            marker = dict(symbol=marker_symbol, size=26, color=color, line=dict(width=2, color='black')),
+            name = f"{name} signal",
+            showlegend = False,
+            hovertext = f"{name} ({direction})"
+        ), row = 1, col = 1)
 
     # --- 4. Объём ---
     fig.add_trace(go.Bar(

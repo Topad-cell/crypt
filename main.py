@@ -35,21 +35,22 @@ filtered_candle_patterns = []
 for p in confirmed_candles:
     idx = p['index'] if isinstance(p['index'], int) else df.index.get_loc(p['index'])
     row = df.iloc[idx]
+    # Используем MACD, Bollinger, Stoch
+    macd_ok = row['macd'] > row['macd_signal'] if p['direction'] == 'bullish' else row['macd'] < row['macd_signal']
+    boll_ok = (row['close'] < row['bb_lower']) if p['direction'] == 'bullish' else (row['close'] > row['bb_upper'])
+    stoch_ok = (row['stoch_k'] < 20) if p['direction'] == 'bullish' else (row['stoch_k'] > 80)
     if p['direction'] == 'bullish':
-        # TA: нисходящий тренд, высокий объем, RSI < 35
         trend_down = row['close'] < row['ema_20'] and row['ema_20'] < row['ema_50']
         high_volume = indicators.is_high_volume(row, factor=1.3)
         rsi_ok = indicators.is_bullish_rsi(row, threshold=35)
-        if trend_down and high_volume and rsi_ok:
+        if trend_down and high_volume and rsi_ok and macd_ok and boll_ok and stoch_ok:
             filtered_candle_patterns.append(p)
     elif p['direction'] == 'bearish':
-        # TA: восходящий тренд, высокий объем, RSI > 65
         trend_up = row['close'] > row['ema_20'] and row['ema_20'] > row['ema_50']
         high_volume = indicators.is_high_volume(row, factor=1.3)
         rsi_ok = indicators.is_bearish_rsi(row, threshold=65)
-        if trend_up and high_volume and rsi_ok:
+        if trend_up and high_volume and rsi_ok and macd_ok and boll_ok and stoch_ok:
             filtered_candle_patterns.append(p)
-
 # 6. Фильтрация фигурных паттернов по объёму и RSI (по желанию — можно сложнее!)
 filtered_chart_patterns = []
 for p in confirmed_chart:
