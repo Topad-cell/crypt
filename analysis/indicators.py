@@ -82,3 +82,11 @@ def compute_bollinger_bands(df, n=20, k=2):
     upper = ma + k * std
     lower = ma - k * std
     return upper, ma, lower
+
+# --- Stochastic Oscillator ---
+def compute_stochastic(df, k_period=14, d_period=3):
+    low_min = df['low'].rolling(window=k_period).min()
+    high_max = df['high'].rolling(window=k_period).max()
+    k_fast = 100 * (df['close'] - low_min) / (high_max - low_min)
+    d_slow = k_fast.rolling(window=d_period).mean()
+    return k_fast, d_slow

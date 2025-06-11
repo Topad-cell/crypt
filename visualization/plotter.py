@@ -4,17 +4,18 @@ from plotly.subplots import make_subplots
 def plot_patterns(df, candle_patterns, chart_patterns):
     # --- Создаём subplot: Price+Patterns, Volume, RSI
     fig = make_subplots(
-        rows=4, cols=1,
+        rows=5, cols=1,
         shared_xaxes=True,
         vertical_spacing=0.04,
-        row_heights=[0.65, 0.18, 0.18, 0.17],
+        row_heights=[0.65, 0.18, 0.18, 0.17, 0.17],
         specs=[
             [{"secondary_y": True}],  # 1-й ряд — цена+паттерны
             [{"type": "bar"}],  # 1-й ряд — цена+паттерны
             [{"type": "bar"}],  # 2-й ряд — только объём
             [{"type": "xy"}],  # 3-й ряд — RSI
+            [{"type": "xy"}],  # 3-й ряд — RSI
         ],
-        subplot_titles=("Price & Patterns", "DateTime", "Volume", "RSI")
+        subplot_titles=("Price & Patterns", "DateTime", "Volume", "RSI", "Stochastic Oscillator")
     )
 
     # --- 1. Основной свечной график ---
@@ -161,6 +162,19 @@ def plot_patterns(df, candle_patterns, chart_patterns):
         fig.add_hline(y=70, line_dash='dot', line_color='red', row=4, col=1)
         fig.add_hline(y=30, line_dash='dot', line_color='green', row=4, col=1)
 
+    # --- Stochastic Oscillator (ряд 5) ---
+    if 'stoch_k' in df and 'stoch_d' in df:
+        fig.add_trace(go.Scatter(
+            x = df['datetime'], y = df['stoch_k'],
+            mode = 'lines', name = '%K', line = dict(width=1.2, color='dodgerblue')
+        ), row = 5, col = 1)
+        fig.add_trace(go.Scatter(
+            x = df['datetime'], y = df['stoch_d'],
+            mode = 'lines', name = '%D', line = dict(width=1.2, color='orange', dash='dash')
+        ), row = 5, col = 1)
+        # Линии перекупленности/перепроданности (обычно 80 и 20)
+        fig.add_hline(y=80, line_dash='dot', line_color='red', row=5, col=1)
+        fig.add_hline(y=20, line_dash='dot', line_color='green', row=5, col=1)
     # --- Оформление ---
     fig.update_layout(
         title='Crypto Chart with Patterns & Indicators',
@@ -168,6 +182,7 @@ def plot_patterns(df, candle_patterns, chart_patterns):
         yaxis2=dict(title='Datetime'),
         yaxis3=dict(title='Volume'),
         yaxis4=dict(title='RSI'),
+        yaxis5=dict(title='Stochastic Oscillator'),
         height=1000,
         template='plotly_dark',
         legend=dict(orientation="h", yanchor="bottom", y=1.01, xanchor="right", x=1)

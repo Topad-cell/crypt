@@ -2,7 +2,7 @@ import pandas as pd
 from patterns import candlestick, chart
 from visualization.plotter import plot_patterns
 from analysis import indicators
-from analysis.indicators import compute_atr, compute_macd, compute_bollinger_bands
+from analysis.indicators import compute_atr, compute_macd, compute_bollinger_bands, compute_stochastic
 
 # 1. Загрузка данных
 df = pd.read_csv('data/df_high.csv', parse_dates=['datetime'])
@@ -18,6 +18,9 @@ df['macd'], df['macd_signal'], df['macd_hist'] = compute_macd(df)
 
 # === Bollinger Bands ===
 df['bb_upper'], df['bb_ma'], df['bb_lower'] = compute_bollinger_bands(df)
+
+# === Stochastic Oscillator ===
+df['stoch_k'], df['stoch_d'] = compute_stochastic(df)
 
 # 3. Поиск паттернов
 candle_patterns = candlestick.find_all_patterns(df)
