@@ -52,9 +52,13 @@ def plot_patterns(df, candle_patterns, chart_patterns):
     # --- 2. Свечные паттерны ---
     pattern_colors = {'bullish': 'limegreen', 'bearish': 'orangered', 'neutral': 'dodgerblue'}
 
+    pattern_types_in_legend = set()
     for p in candle_patterns:
         idx = p['index'] if isinstance(p['index'], int) else df.index.get_loc(p['index'])
         x = df['datetime'].iloc[idx]
+        name = p['type']
+        show_legend = name not in pattern_types_in_legend
+        pattern_types_in_legend.add(name)
         if p['direction'] == 'bullish':
             y = df['low'].iloc[idx] * 0.98
             color = pattern_colors['bullish']
@@ -69,14 +73,17 @@ def plot_patterns(df, candle_patterns, chart_patterns):
             x=[x], y=[y],
             mode='markers',
             marker=dict(color=color, size=12, symbol='diamond'),
-            name=p['type'],
-            showlegend=False,
+            name=name,
+            legendgroup=name,
+            showlegend=show_legend,
             hovertext=f"{p['type']} ({p['direction']})"
         ), row=1, col=1)
 
     # --- 3. Фигурные паттерны ---
     for pattern in chart_patterns:
         name = pattern['type']
+        show_legend = name not in pattern_types_in_legend
+        pattern_types_in_legend.add(name)
         indices = pattern['indices']
         direction = pattern.get('direction', 'neutral')
         color = pattern_colors.get(direction, 'dodgerblue')
@@ -96,7 +103,8 @@ def plot_patterns(df, candle_patterns, chart_patterns):
             marker=dict(color=color, size=9, symbol='circle'),
             line=dict(color=color, width=3, dash='dot'),
             name=name,
-            showlegend=False,
+            legendgroup=name,
+            showlegend=show_legend,
             hovertext=f"{name} ({direction})"
         ), row=1, col=1)
 
