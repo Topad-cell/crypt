@@ -238,7 +238,8 @@ def plot_patterns(df, candle_patterns, chart_patterns):
         yaxis3=dict(title='Volume'),
         yaxis4=dict(title='RSI'),
         yaxis5=dict(title='Stochastic Oscillator'),
-        height=1000,
+        height=1200,
+        width=1400,
         template='plotly_dark',
         legend=dict(orientation="h", yanchor="bottom", y=1.01, xanchor="right", x=1)
     )
