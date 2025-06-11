@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-def plot_patterns(df, candle_patterns, chart_patterns):
+def plot_patterns(df, candle_patterns, chart_patterns, return_fig=True):
     # --- Создаём subplot: Price+Patterns, Volume, RSI
     fig = make_subplots(
         rows=5, cols=1,
@@ -232,15 +232,38 @@ def plot_patterns(df, candle_patterns, chart_patterns):
         fig.add_hline(y=20, line_dash='dot', line_color='green', row=5, col=1)
     # --- Оформление ---
     fig.update_layout(
-        title='Crypto Chart with Patterns & Indicators',
-        yaxis1=dict(title='Price'),
-        yaxis2=dict(title='Datetime'),
-        yaxis3=dict(title='Volume'),
-        yaxis4=dict(title='RSI'),
-        yaxis5=dict(title='Stochastic Oscillator'),
-        height=1200,
-        width=1400,
-        template='plotly_dark',
-        legend=dict(orientation="h", yanchor="bottom", y=1.01, xanchor="right", x=1)
+        title = 'Crypto Chart with Patterns & Indicators',
+        template = 'plotly_dark',
+        height = 740,
+        margin = dict(l=40, r=20, t=42, b=36),
+        font = dict(family="Inter, Arial", size=16, color="#ddd"),
+        legend = dict(
+            orientation = "h",
+            yanchor = "bottom", y = 1.01,
+            xanchor = "center", x = 0.5,
+            bgcolor = "rgba(20,20,36,0.88)",
+            bordercolor = "#282a35",
+            borderwidth = 1.5,
+            font = dict(size=14, color="#eee")
+        ),
+        hovermode = "x unified",
+        plot_bgcolor = "rgba(30,32,44,1)",
+        paper_bgcolor = "rgba(28,29,39,1)",
+        hoverlabel = dict(bgcolor="rgba(26,26,30,0.95)", font_size=16, font_family="Inter, Arial"),
+        dragmode = "pan"
     )
+    # X-оси всегда интерактивны
+    fig.update_xaxes(fixedrange=False)
+    # Только Price (1-й ряд) зумится по Y
+    fig.update_yaxes(fixedrange=False, row=1, col=1)
+    # Остальные — фиксированы по Y (чтобы не “прыгали”)
+    for row in range(2, 6):
+        fig.update_yaxes(fixedrange=True, row=row, col=1)
+    fig.update_yaxes(showgrid=True, gridwidth=0.55, gridcolor="rgba(90,100,120,0.10)")
+    fig.update_xaxes(showgrid=False)
+    # Более читаемые подписи осей
+    fig.update_yaxes(title_font=dict(size=16, color="#bdbfc9"))
+    fig.update_xaxes(title_font=dict(size=16, color="#bdbfc9"))
+    if return_fig:
+        return fig
     fig.show()
