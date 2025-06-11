@@ -9,7 +9,7 @@ def plot_patterns(df, candle_patterns, chart_patterns):
         vertical_spacing=0.04,
         row_heights=[0.65, 0.18, 0.18, 0.17],
         specs=[
-            [{"type": "xy"}],  # 1-й ряд — цена+паттерны
+            [{"secondary_y": True}],  # 1-й ряд — цена+паттерны
             [{"type": "bar"}],  # 1-й ряд — цена+паттерны
             [{"type": "bar"}],  # 2-й ряд — только объём
             [{"type": "xy"}],  # 3-й ряд — RSI
@@ -32,7 +32,7 @@ def plot_patterns(df, candle_patterns, chart_patterns):
         fig.add_trace(go.Scatter(
             x = df['datetime'], y = df['atr_14'],
             mode = 'lines', name = 'ATR 14', line = dict(width=1, color='magenta', dash='dash')
-        ), row = 1, col = 1)
+        ), row = 1, col = 1, secondary_y=True)
     if 'ema_20' in df:
         fig.add_trace(go.Scatter(
             x=df['datetime'], y=df['ema_20'],
