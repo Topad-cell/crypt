@@ -1,10 +1,6 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-
 def plot_patterns(df, candle_patterns, chart_patterns):
     # --- Создаём subplot: Price+Patterns, Volume, RSI
     fig = make_subplots(
@@ -12,6 +8,11 @@ def plot_patterns(df, candle_patterns, chart_patterns):
         shared_xaxes=True,
         vertical_spacing=0.04,
         row_heights=[0.65, 0.18, 0.17],
+        specs=[
+            [{"type": "xy"}],  # 1-й ряд — цена+паттерны
+            [{"type": "bar"}],  # 2-й ряд — только объём
+            [{"type": "xy"}],  # 3-й ряд — RSI
+        ],
         subplot_titles=("Price & Patterns", "Volume", "RSI")
     )
 
