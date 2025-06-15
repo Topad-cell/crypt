@@ -1,0 +1,13 @@
++## Быстрая авточистка и стиль кода
++1. Установи pre-commit:
++   ```
++   pip install pre-commit
++   ```
++2. Активируй хуки:
++   ```
++   pre-commit install
++   ```
++3. Очисти проект:
++   ```
++   pre-commit run --all-files
++   ```
