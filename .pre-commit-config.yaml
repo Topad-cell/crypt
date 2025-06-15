@@ -1,4 +1,14 @@
 repos:
+  - repo: https://github.com/psf/black
+    rev: 24.3.0
+    hooks:
+      - id: black
+        language_version: python3
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: 32119baf69e913a72f2e1b1fbe0d56921b670ebb
+    hooks:
+      - id: isort
+        language_version: python3
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     rev: v0.4.2
     hooks:
